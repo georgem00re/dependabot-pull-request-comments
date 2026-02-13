@@ -4,7 +4,7 @@ updates:
     schedule:
       interval: "daily"
       time: "00:00"
-    directory: "/nodejs-project-1"
+    directory: "/node-project-1"
     open-pull-requests-limit: 5
     groups:
       nodejs-dependencies:
@@ -17,7 +17,7 @@ updates:
     schedule:
       interval: "daily"
       time: "00:00"
-    directory: "/nodejs-project-2"
+    directory: "/node-project-2"
     open-pull-requests-limit: 5
     groups:
       nodejs-dependencies:

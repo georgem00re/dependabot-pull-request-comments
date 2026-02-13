@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+    directory: "/nodejs-project-1"
+    open-pull-requests-limit: 5
+    groups:
+      nodejs-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+  - package-ecosystem: "npm"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+    directory: "/nodejs-project-2"
+    open-pull-requests-limit: 5
+    groups:
+      nodejs-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]

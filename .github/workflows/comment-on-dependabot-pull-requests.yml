@@ -1,0 +1,50 @@
+name: comment-on-dependabot-pull-requests
+on:
+  pull_request_target:
+    types: [opened] # Comments will only be left on newly-opened pull requests.
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  leave-comment:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        id: get-comment
+        with:
+          script: |
+            const changedFiles = await github.paginate(
+              github.rest.pulls.listFiles,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                per_page: 100
+              }
+            );
+            const changedFileNames = changedFiles.map(f => f.filename);
+            
+            const nodeProject1Changed = changedFileNames.includes("node-project-1/package.json") 
+              || changedFileNames.includes("node-project-1/package-lock.json");
+            
+            const nodeProject2Changed = changedFileNames.includes("node-project-2/package.json") 
+              || changedFileNames.includes("node-project-2/package-lock.json");
+                        
+            const comment = nodeProject1Changed ? "node-project-1 updated" : nodeProject2Changed 
+              ? "node-project-2 updated" : "";
+            
+            core.setOutput("comment", comment);
+
+      - uses: actions/github-script@v7
+        if: steps.get-comment.outputs.comment != ''
+        env:
+          COMMENT: ${{ steps.get-comment.outputs.comment }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: process.env.COMMENT,
+            });
